@@ -1,10 +1,9 @@
 """
-Data Loader: Load OHLCV candles from CSV.
+Data Loader: Load OHLCV candles from CSV or Binance API.
 
-Expected CSV format:
-timestamp,open,high,low,close,volume
-2024-01-01T00:00:00Z,43000,43500,42800,43200,1000
-...
+Supports:
+- CSV loading (for backtesting with existing data)
+- Binance API loading (for real live data)
 """
 
 from typing import List, Optional
@@ -17,7 +16,7 @@ logger = get_logger(__name__)
 
 
 class DataLoader:
-    """Load historical OHLCV data from CSV."""
+    """Load historical OHLCV data from CSV or Binance API."""
 
     @staticmethod
     def load_csv(
@@ -64,7 +63,7 @@ class DataLoader:
             )
             candles.append(candle)
         
-        logger.info(f"Loaded {len(candles)} candles")
+        logger.info(f"Loaded {len(candles)} candles from CSV")
         return candles
 
     @staticmethod
@@ -73,9 +72,40 @@ class DataLoader:
         timeframe: str,
         start_date: datetime,
         end_date: datetime,
+        api_key: str = None,
+        api_secret: str = None,
     ) -> List[Candle]:
         """
-        Load candles from Binance API (future implementation).
+        Load candles from Binance API (real data).
+        
+        Args:
+            pair: Trading pair (BTCUSDT, ETHUSDT, etc.)
+            timeframe: Candle interval (1m, 5m, 15m, 30m, 1h, 4h, 1d, 1w)
+            start_date: Start datetime for historical data
+            end_date: End datetime for historical data
+            api_key: Binance API key (optional for public data)
+            api_secret: Binance API secret (optional for public data)
+        
+        Returns:
+            List of Candle objects with real Binance data
         """
-        # TODO: Implement Binance API integration
-        pass
+        from trading_system.connectors.binance_connector import BinanceConnector
+        
+        logger.info(f"Loading {pair} {timeframe} from Binance API...")
+        
+        connector = BinanceConnector(api_key=api_key, api_secret=api_secret)
+        
+        # Validate pair exists
+        if not connector.validate_pair(pair):
+            raise ValueError(f"Invalid pair: {pair}")
+        
+        # Fetch real data from Binance
+        candles = connector.fetch_klines(
+            pair=pair,
+            timeframe=timeframe,
+            start_date=start_date,
+            end_date=end_date,
+        )
+        
+        logger.info(f"Loaded {len(candles)} real candles from Binance API")
+        return candles
