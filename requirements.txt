@@ -1,0 +1,27 @@
+# Core Data & Math
+pandas==2.1.1
+numpy==1.24.3
+python-dateutil==2.8.2
+
+# Trading & Exchange API
+ccxt==4.0.25
+
+# Backtesting & Analysis
+ta-lib==0.4.28
+pytz==2023.3
+
+# Visualization & Charts
+matplotlib==3.8.0
+plotly==5.18.0
+seaborn==0.12.2
+
+# Configuration
+python-dotenv==1.0.0
+
+# Utilities
+tqdm==4.66.1
+loguru==0.7.2
+
+# Testing (optional)
+pytest==7.4.3
+pytest-cov==4.1.0
