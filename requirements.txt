@@ -5,6 +5,7 @@ python-dateutil==2.8.2
 
 # Trading & Exchange API
 ccxt==4.0.25
+python-binance==1.0.17
 
 # Backtesting & Analysis
 ta-lib==0.4.28
